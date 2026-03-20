@@ -1,0 +1,3 @@
+# ignore nvim lazy lock file
+nvim/lazy-lock.json
+
