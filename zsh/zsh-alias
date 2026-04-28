@@ -1,0 +1,9 @@
+# common command
+alias ls='ls --color=auto'
+alias l='ls -F'
+alias ll='ls -aFhl'
+alias ..='cd ..'
+alias ...='cd ../..'
+
+# list disk
+alias lsk='df -h | rg nvme'

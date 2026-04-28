@@ -1,0 +1,111 @@
+# ==============================
+# 极致性能 Zsh 配置(Fast Mode)
+# ==============================
+
+# --------------------------------
+# 1. 基础环境(几乎无开销)
+# --------------------------------
+
+# 历史记录文件
+HISTFILE="$HOME/.zsh_history"
+HISTSIZE=10000        # 内存中历史数量
+SAVEHIST=10000        # 文件保存数量
+
+# 历史优化
+setopt appendhistory          # 追加写入
+setopt sharehistory           # 多终端共享
+setopt hist_ignore_dups       # 忽略重复命令
+setopt hist_reduce_blanks     # 去除多余空格
+
+# --------------------------------
+# 2. 核心行为优化(轻量)
+# --------------------------------
+
+setopt autocd                 # 输入目录名, 自动 cd
+setopt interactive_comments   # 命令行支持 # 注释
+setopt extendedglob           # 强化通配符
+
+unsetopt beep                 # 禁止蜂鸣
+stty stop undef   			  # 防止 Ctrl+S 卡死终端
+
+# --------------------------------
+# 3. 补全系统(性能关键点)
+# --------------------------------
+
+# compinit 是 zsh 最慢的部分之一, 必须优化
+autoload -Uz compinit
+
+# 使用缓存(避免每次扫描)
+ZSH_COMPDUMP="$HOME/.cache/zsh/zcompdump"
+
+# 如果缓存不存在 or zshrc 更新 → 重建
+if [[ ! -f $ZSH_COMPDUMP || $ZSH_COMPDUMP -ot ~/.zshrc ]]; then
+    compinit -d $ZSH_COMPDUMP
+else
+    compinit -C -d $ZSH_COMPDUMP   # 使用缓存(极快)
+fi
+
+# 补全增强
+zstyle ':completion:*' menu select
+zmodload zsh/complist
+
+# --------------------------------
+# 4. 历史搜索(几乎零开销)
+# --------------------------------
+
+autoload -U up-line-or-beginning-search
+autoload -U down-line-or-beginning-search
+
+zle -N up-line-or-beginning-search
+zle -N down-line-or-beginning-search
+
+# --------------------------------
+# 5. 快捷键(轻量)
+# --------------------------------
+
+# 删除键兼容
+bindkey '^[[P' delete-char
+
+# 类 vim 的历史搜索
+bindkey "^k" up-line-or-beginning-search
+bindkey "^j" down-line-or-beginning-search
+
+# 常用工具
+# bindkey -s '^o' 'ranger^M'
+# bindkey -s '^f' 'zi^M'
+# bindkey -s '^s' 'ncdu^M'
+
+# --------------------------------
+# 6. 命令行编辑(低成本高收益)
+# --------------------------------
+
+# autoload edit-command-line
+# zle -N edit-command-line
+# bindkey '^e' edit-command-line   # Ctrl+e 用 nvim 编辑命令
+
+bindkey -v
+KEYTIMEOUT=1
+
+# jk 退出 insert
+bindkey -M viins 'jk' vi-cmd-mode
+bindkey -M vicmd 'k' up-line-or-beginning-search
+bindkey -M vicmd 'j' down-line-or-beginning-search
+
+# --------------------------------
+# 7. 插件
+# --------------------------------
+
+ZSH_PLUGIN_DIR="/usr/share/zsh/plugins"
+
+# ===== autosuggestions=====
+if [[ -f "$ZSH_PLUGIN_DIR/zsh-autosuggestions/zsh-autosuggestions.zsh" ]]; then
+    source "$ZSH_PLUGIN_DIR/zsh-autosuggestions/zsh-autosuggestions.zsh"
+	ZSH_AUTOSUGGEST_BUFFER_MAX_SIZE=20
+	bindkey '^f' autosuggest-accept    # Ctrl + f 接受
+	bindkey '\el' autosuggest-accept   # Alt + l
+fi
+
+# ===== syntax highlighting=====
+if [[ -f "$ZSH_PLUGIN_DIR/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh" ]]; then
+    source "$ZSH_PLUGIN_DIR/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh"
+fi
