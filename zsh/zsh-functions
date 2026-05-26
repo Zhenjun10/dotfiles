@@ -1,6 +1,23 @@
 function git2zhenjun() {
-  git config user.name "Zhenjun10"
-  git config user.email "yuanyixincun@163.com"
+  # only change local repo git config
+  git config --local user.name "Zhenjun10"
+  git config --local user.email "yuanyixincun@163.com"
+}
+
+function git2cheremace() {
+  git config --local user.name "cheremace"
+  git config --local user.email "cheremace@gmail.com"
+}
+
+function enable_proxy() {
+  if [[ $# -eq 0 ]]; then
+    echo "usage:"
+    echo "enable_proxy host:prot"
+  else
+    export ALL_PROXY=http://$1
+    export HTTP_PROXY=http://$1
+    export HTTPS_PROXY=http://$1
+  fi
 }
 
 function lrun() {
