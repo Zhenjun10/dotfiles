@@ -26,7 +26,7 @@ setopt interactive_comments   # 命令行支持 # 注释
 setopt extendedglob           # 强化通配符
 
 unsetopt beep                 # 禁止蜂鸣
-stty stop undef   			  # 防止 Ctrl+S 卡死终端
+stty stop undef               # 防止 Ctrl+S 卡死终端
 
 # --------------------------------
 # 3. 补全系统(性能关键点)
