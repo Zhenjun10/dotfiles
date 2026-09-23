@@ -95,7 +95,7 @@ bindkey -M vicmd 'j' down-line-or-beginning-search
 # 7. 插件
 # --------------------------------
 
-ZSH_PLUGIN_DIR="/usr/share/zsh/plugins"
+ZSH_PLUGIN_DIR="/usr/share"
 
 # ===== autosuggestions=====
 if [[ -f "$ZSH_PLUGIN_DIR/zsh-autosuggestions/zsh-autosuggestions.zsh" ]]; then
